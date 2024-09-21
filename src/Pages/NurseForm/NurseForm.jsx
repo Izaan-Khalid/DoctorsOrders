@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
 
 const supabase = createClient(
   "https://folxeipnfjiyraszjjod.supabase.co",
@@ -14,21 +15,47 @@ export function NurseForm() {
     formState: { errors },
   } = useForm();
   const [urgencyValue, setUrgencyValue] = useState(3);
+  const navigate = useNavigate(); // Initialize useNavigate for redirection
+  const [isLoading, setisLoading] = useState(false)
+
 
   async function addData(data) {
-    const { error } = await supabase.from("DoctorsOrders").insert({
-      nurseId: data.nurseId,
-      patientName: data.patientName,
-      roomNo: data.roomNum,
-      itemRequested: data.itemRequested,
-      urgency: urgencyValue,
-      reason: data.reason,
+	try{
+		setisLoading(true)
+		const { error } = await supabase.from("DoctorsOrders").insert({
+		nurseId: data.nurseId,
+		patientName: data.patientName,
+		roomNo: data.roomNum,
+		itemRequested: data.itemRequested,
+		urgency: urgencyValue,
+		reason: data.reason,
     });
-    console.log(error);
+	}
+	catch{
+		console.log("Error")
+	}
+	finally{
+		navigate("/nurse-orders", { state: { refresh: true } });
+ // Redirect to /nurse-orders on successful submission
+	}
+  }
+
+  if(isLoading){
+	return(
+		<div className="flex justify-center items-center h-screen">
+			<div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+		</div>
+	)
   }
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
+      <button
+        onClick={() => navigate("/nurse-orders")} // Back button to navigate to /nurse-orders
+        className="mb-4 text-blue-500 hover:underline"
+      >
+        Back to Nurse Orders
+      </button>
       <h1 className="text-2xl font-bold text-center mb-6">Request Form</h1>
       <form
         onSubmit={handleSubmit((data) => addData(data))}
@@ -36,9 +63,7 @@ export function NurseForm() {
       >
         {/* Nurse ID Field */}
         <div>
-          <label className="block text-gray-700 font-medium mb-2">
-            Nurse ID
-          </label>
+          <label className="block text-gray-700 font-medium mb-2">Nurse ID</label>
           <input
             {...register("nurseId", { required: true })}
             placeholder="Nurse ID"
@@ -52,9 +77,7 @@ export function NurseForm() {
 
         {/* Patient Name Field */}
         <div>
-          <label className="block text-gray-700 font-medium mb-2">
-            Patient Name
-          </label>
+          <label className="block text-gray-700 font-medium mb-2">Patient Name</label>
           <input
             {...register("patientName", { required: true })}
             placeholder="Patient Name"
@@ -67,9 +90,7 @@ export function NurseForm() {
 
         {/* Room Number Field */}
         <div>
-          <label className="block text-gray-700 font-medium mb-2">
-            Room Number
-          </label>
+          <label className="block text-gray-700 font-medium mb-2">Room Number</label>
           <input
             {...register("roomNum", { required: true })}
             placeholder="Room Number"
@@ -82,9 +103,7 @@ export function NurseForm() {
 
         {/* Item Requested Field */}
         <div>
-          <label className="block text-gray-700 font-medium mb-2">
-            Item Requested
-          </label>
+          <label className="block text-gray-700 font-medium mb-2">Item Requested</label>
           <input
             {...register("itemRequested", { required: true })}
             placeholder="Item Requested"
@@ -113,32 +132,32 @@ export function NurseForm() {
                 <strong style={{ color: "#4CAF50" }}>Level 1: Low Urgency</strong>
                 <br />
                 Non-critical patient needs (e.g., extra blanket, pillow adjustment).
-				<br />
-				Response: 2-4 hours. 
+                <br />
+                Response: 2-4 hours.
                 <br />
                 <strong style={{ color: "#FFC107" }}>Level 2: Mild Urgency</strong>
                 <br />
                 Timely but non-urgent (e.g., assistance with food or medication reminders).
-				<br />
-				Response: 1-2 hours.
+                <br />
+                Response: 1-2 hours.
                 <br />
                 <strong style={{ color: "#FF9800" }}>Level 3: Moderate Urgency</strong>
                 <br />
                 Affects care, but not life-threatening (e.g., IV bag replacement).
-				<br />
-				Response: 30-60 mins.
+                <br />
+                Response: 30-60 mins.
                 <br />
                 <strong style={{ color: "#F44336" }}>Level 4: High Urgency</strong>
                 <br />
                 Immediate attention needed to avoid complications (e.g., pain medication).
-				<br />
-				Response: 15-30 mins.
+                <br />
+                Response: 15-30 mins.
                 <br />
                 <strong style={{ color: "#D32F2F" }}>Level 5: Critical Urgency</strong>
                 <br />
                 Urgent care required (e.g., severe pain or equipment malfunction).
-				<br />
-				Response: 5-15 mins.
+                <br />
+                Response: 5-15 mins.
               </div>
             </span>
           </label>

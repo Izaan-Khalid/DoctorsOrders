@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { createClient } from "@supabase/supabase-js";
 
 // Format the time for both "time requested" and "time approved"
 const formatTime = (timeString) => {
@@ -24,6 +26,21 @@ const getRowColor = (urgency) => {
 };
 
 export const NurseOrders = ({ data }) => {
+  const location = useLocation();
+  const [orders, setOrders] = useState([]);  
+  useEffect(() => {
+    const fetchOrders = async () => {
+      const { data } = await supabase.from("DoctorsOrders").select();
+      setOrders(data);
+    };
+
+    fetchOrders();
+    
+    // Check for the refresh flag
+    if (location.state?.refresh) {
+      fetchOrders(); // Fetch the latest data if refresh is true
+    }
+  }, [location.state]);
   // Assuming `data` is an array of orders from Supabase
   const sentOrders = data.filter(order => !order.approved); // Adjust based on your actual status field
   const approvedOrders = data.filter(order => order.approved); // Adjust based on your actual status field
