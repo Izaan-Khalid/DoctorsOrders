@@ -7,7 +7,7 @@ import {
 	Route,
 	Navigate,
 } from "react-router-dom"
-import { DoctorOrders, Home, NurseForm, NurseOrders } from "./Pages"
+import { DoctorOrders, Home, Login, NurseForm, NurseOrders } from "./Pages"
 
 const supabase = createClient(
 	"https://folxeipnfjiyraszjjod.supabase.co",
