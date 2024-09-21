@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import moment from "moment-timezone";
+import { createClient } from "@supabase/supabase-js";
 
 const getRowColor = (urgency) => {
 	switch (urgency) {
@@ -18,21 +19,43 @@ const getRowColor = (urgency) => {
 	}
 };
 
+const supabase = createClient(
+	"https://folxeipnfjiyraszjjod.supabase.co",
+	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZvbHhlaXBuZmppeXJhc3pqam9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY4OTQ1MTUsImV4cCI6MjA0MjQ3MDUxNX0.bsyItI4bs1iykdZY0wrsRPpHLgwfFBP2zEvU8ahnP2I"
+);
+
+const sortData = (data) => {
+	return data.sort((a, b) => {
+		// Sort by urgency (descending order)
+		if (b.urgency !== a.urgency) {
+			return b.urgency - a.urgency;
+		}
+		// If urgency is the same, sort by created_at (latest first)
+		return moment(a.created_at).valueOf() - moment(b.created_at).valueOf();
+	});
+};
+
 export function DoctorOrders({ data }) {
 	const [showApprovalModal, setShowApprovalModal] = useState(false);
 	const [showReasonModal, setShowReasonModal] = useState(false);
 	const [selectedRequest, setSelectedRequest] = useState(null);
 	const [selectedReason, setSelectedReason] = useState("");
 
+	const sortedData = sortData([...data]);
+
 	const handleApproveClick = (request) => {
 		setSelectedRequest(request);
 		setShowApprovalModal(true);
 	};
 
-	const handleConfirm = () => {
-		alert(`${selectedRequest.patientName}'s request approved!`);
-		setShowApprovalModal(false);
-	};
+	async function approveRequest(request) {
+		const { error } = await supabase
+			.from("DoctorsOrders")
+			.update({ approved: true })
+			.eq("id", request.id);
+		console.log(error);
+		console.log(request);
+	}
 
 	const handleViewReason = (reason) => {
 		setSelectedReason(reason);
@@ -62,7 +85,7 @@ export function DoctorOrders({ data }) {
 					</tr>
 				</thead>
 				<tbody>
-					{data.map((request) => (
+					{sortedData.map((request) => (
 						<tr key={request.id} className={getRowColor(request.urgency)}>
 							<td className="border px-4 py-2">
 								<button
@@ -107,7 +130,7 @@ export function DoctorOrders({ data }) {
 						<div className="mt-4">
 							<button
 								className="bg-green-500 text-white py-1 px-4 rounded mr-2"
-								onClick={handleConfirm}
+								onClick={() => approveRequest(selectedRequest)}
 							>
 								Approve
 							</button>
