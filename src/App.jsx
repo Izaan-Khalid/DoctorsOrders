@@ -36,7 +36,10 @@ function App() {
 						path="/nurse-orders"
 						element={<NurseOrders data={docOrders} />}
 					/>
-					<Route path="/doctor-orders" element={<DoctorOrders />} />
+					<Route
+						path="/doctor-orders"
+						element={<DoctorOrders data={docOrders} />}
+					/>
 				</Routes>
 			</div>
 		</Router>
