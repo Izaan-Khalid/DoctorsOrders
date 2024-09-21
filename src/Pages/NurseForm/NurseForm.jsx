@@ -35,7 +35,10 @@ export function NurseForm() {
 		console.log("Error")
 	}
 	finally{
-		navigate("/nurse-orders", { state: { refresh: true } });
+		setTimeout(() => {
+			navigate("/nurse-orders", { state: { refresh: true } });
+		}, 1000);
+		
  // Redirect to /nurse-orders on successful submission
 	}
   }
