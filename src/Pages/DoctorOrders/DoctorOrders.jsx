@@ -1,42 +1,50 @@
-import React, { useState } from "react"
+import React, { useState } from "react";
+import moment from "moment-timezone";
 
 const getRowColor = (urgency) => {
 	switch (urgency) {
 		case 1:
-			return "bg-green-100" // Low urgency
+			return "bg-green-100"; // Low urgency
 		case 2:
-			return "bg-yellow-100" // Medium urgency
+			return "bg-yellow-100"; // Medium urgency
 		case 3:
-			return "bg-orange-100" // High urgency
+			return "bg-orange-100"; // High urgency
 		case 4:
-			return "bg-red-100" // Very high urgency
+			return "bg-red-200"; // Very high urgency
 		case 5:
-			return "bg-red-200" // Critical urgency
+			return "bg-red-300"; // Critical urgency
 		default:
-			return ""
+			return "";
 	}
-}
+};
 
 export function DoctorOrders({ data }) {
-	const [showApprovalModal, setShowApprovalModal] = useState(false)
-	const [showReasonModal, setShowReasonModal] = useState(false)
-	const [selectedRequest, setSelectedRequest] = useState(null)
-	const [selectedReason, setSelectedReason] = useState("")
+	const [showApprovalModal, setShowApprovalModal] = useState(false);
+	const [showReasonModal, setShowReasonModal] = useState(false);
+	const [selectedRequest, setSelectedRequest] = useState(null);
+	const [selectedReason, setSelectedReason] = useState("");
 
 	const handleApproveClick = (request) => {
-		setSelectedRequest(request)
-		setShowApprovalModal(true)
-	}
+		setSelectedRequest(request);
+		setShowApprovalModal(true);
+	};
 
 	const handleConfirm = () => {
-		alert(`${selectedRequest.patientName}'s request approved!`)
-		setShowApprovalModal(false)
-	}
+		alert(`${selectedRequest.patientName}'s request approved!`);
+		setShowApprovalModal(false);
+	};
 
 	const handleViewReason = (reason) => {
-		setSelectedReason(reason)
-		setShowReasonModal(true)
-	}
+		setSelectedReason(reason);
+		setShowReasonModal(true);
+	};
+
+	const convertToCentralTime = (timestamp) => {
+		return moment
+			.utc(timestamp)
+			.tz("America/Chicago")
+			.format("YYYY-MM-DD HH:mm:ss");
+	};
 
 	return (
 		<div className="max-w-6xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
@@ -61,14 +69,16 @@ export function DoctorOrders({ data }) {
 									className="bg-blue-500 text-white font-medium py-1 px-2 rounded hover:bg-blue-600"
 									onClick={() => handleApproveClick(request)}
 								>
-									Approve
+									Actions ➡️
 								</button>
 							</td>
 							<td className="border px-4 py-2">{request.patientName}</td>
 							<td className="border px-4 py-2">{request.itemRequested}</td>
 							<td className="border px-4 py-2">{request.roomNo}</td>
 							<td className="border px-4 py-2 font-bold">{request.urgency}</td>
-							<td className="border px-4 py-2">{request.created_at}</td>
+							<td className="border px-4 py-2">
+								{convertToCentralTime(request.created_at)}
+							</td>
 							<td className="border px-4 py-2">
 								<span
 									className="relative cursor-pointer text-blue-500 hover:underline"
@@ -88,23 +98,30 @@ export function DoctorOrders({ data }) {
 			{showApprovalModal && (
 				<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
 					<div className="bg-white p-6 rounded shadow-lg">
-						<h2 className="text-lg font-bold mb-4">Confirm Approval</h2>
+						<h2 className="text-lg font-bold mb-4">Actions</h2>
 						<p>
-							Are you sure you want to approve the request for{" "}
-							{selectedRequest.patientName}?
+							Would you like to approve the request made by{" "}
+							{selectedRequest.patientName} for a{" "}
+							{selectedRequest.itemRequested}?
 						</p>
 						<div className="mt-4">
 							<button
 								className="bg-green-500 text-white py-1 px-4 rounded mr-2"
 								onClick={handleConfirm}
 							>
-								Yes
+								Approve
 							</button>
 							<button
-								className="bg-red-500 text-white py-1 px-4 rounded"
+								className="bg-red-500 text-white py-1 px-4 rounded mr-2"
 								onClick={() => setShowApprovalModal(false)}
 							>
-								No
+								Deny
+							</button>
+							<button
+								className="bg-yellow-500 text-white py-1 px-4 rounded"
+								onClick={() => setShowApprovalModal(false)}
+							>
+								Cancel
 							</button>
 						</div>
 					</div>
@@ -126,5 +143,5 @@ export function DoctorOrders({ data }) {
 				</div>
 			)}
 		</div>
-	)
+	);
 }
