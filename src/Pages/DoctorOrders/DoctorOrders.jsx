@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import moment from "moment-timezone";
 import { createClient } from "@supabase/supabase-js";
 
@@ -25,23 +25,49 @@ const supabase = createClient(
 );
 
 const sortData = (data) => {
-	return data.sort((a, b) => {
-		// Sort by urgency (descending order)
-		if (b.urgency !== a.urgency) {
-			return b.urgency - a.urgency;
-		}
-		// If urgency is the same, sort by created_at (latest first)
-		return moment(a.created_at).valueOf() - moment(b.created_at).valueOf();
-	});
+	return data
+		.filter((item) => item.approved === false)
+		.sort((a, b) => {
+			// Sort by urgency (descending order)
+			if (b.urgency !== a.urgency) {
+				return b.urgency - a.urgency;
+			}
+			// If urgency is the same, sort by created_at (latest first)
+			return moment(a.created_at).valueOf() - moment(b.created_at).valueOf();
+		});
 };
 
-export function DoctorOrders({ data }) {
+export function DoctorOrders() {
 	const [showApprovalModal, setShowApprovalModal] = useState(false);
 	const [showReasonModal, setShowReasonModal] = useState(false);
 	const [selectedRequest, setSelectedRequest] = useState(null);
 	const [selectedReason, setSelectedReason] = useState("");
+	const [sortedData, setSortedData] = useState([]);
 
-	const sortedData = sortData([...data]);
+	// Function to fetch data from Supabase
+	const fetchData = async () => {
+		const { data, error } = await supabase
+			.from("DoctorsOrders")
+			.select("*")
+			.eq("approved", false); // Fetch only non-approved records
+		if (error) {
+			console.error("Error fetching data: ", error);
+		} else {
+			setSortedData(sortData(data));
+		}
+	};
+
+	// Fetch the data when the component mounts
+	useEffect(() => {
+		fetchData();
+	}, []);
+
+	// Re-fetch data whenever the approval modal closes
+	useEffect(() => {
+		if (!showApprovalModal) {
+			fetchData(); // Re-fetch and sort data when modal is closed
+		}
+	}, [showApprovalModal]);
 
 	const handleApproveClick = (request) => {
 		setSelectedRequest(request);
@@ -53,8 +79,13 @@ export function DoctorOrders({ data }) {
 			.from("DoctorsOrders")
 			.update({ approved: true })
 			.eq("id", request.id);
-		console.log(error);
-		console.log(request);
+
+		if (!error) {
+			// After approval, close the modal and trigger data fetch
+			setShowApprovalModal(false);
+		} else {
+			console.error("Error approving request: ", error);
+		}
 	}
 
 	const handleViewReason = (reason) => {
