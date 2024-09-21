@@ -31,6 +31,8 @@ function App() {
 			<div>
 				<Routes>
 					<Route path="/" element={<Home />} />
+					<Route path="/auth/callback" element={<Home />} />
+					<Route path="/login" element={<Login />} /> {/* Add Login route */}
 					<Route path="/nurse-form" element={<NurseForm />} />
 					<Route
 						path="/nurse-orders"

@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import "./Home.css";
+import React, { useState } from "react"
+import "./Home.css"
 
 export const Home = () => {
-	const [isNurseDropdownOpen, setIsNurseDropdownOpen] = useState(false);
+	const [isNurseDropdownOpen, setIsNurseDropdownOpen] = useState(false)
 
 	const handleNurseClick = () => {
-		setIsNurseDropdownOpen(!isNurseDropdownOpen);
-	};
+		setIsNurseDropdownOpen(!isNurseDropdownOpen)
+	}
 
 	return (
 		<div className="container">
@@ -42,7 +42,7 @@ export const Home = () => {
 				</div>
 			</div>
 		</div>
-	);
-};
+	)
+}
 
-export default Home;
+export default Home
