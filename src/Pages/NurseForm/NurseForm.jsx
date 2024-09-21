@@ -35,12 +35,12 @@ export function NurseForm() {
 		console.log("Error")
 	}
 	finally{
+		// Generate a random delay between 200 and 1200 milliseconds
+		const delay = Math.floor(Math.random() * (1200 - 200 + 1)) + 200;
 		setTimeout(() => {
-			navigate("/nurse-orders", { state: { refresh: true } });
-		}, 1000);
-		
- // Redirect to /nurse-orders on successful submission
-	}
+		  navigate("/nurse-orders"); // Redirect to /nurse-orders after the delay
+		}, delay);
+	  }
   }
 
   if(isLoading){
