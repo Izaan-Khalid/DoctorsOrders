@@ -35,14 +35,15 @@
 .dropdown {
 	position: absolute;
 	top: calc(100% + 10px); /* 10px gap below button */
-	left: 0;
+	left: 60px;
 	right: 0;
 	background-color: #fff;
 	padding: 10px;
-	width: 150px;
+	width: 200px;
 	border-radius: 8px;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 	z-index: 99;
+	border: black 1px solid;
 }
 
 .dropdown-item {
