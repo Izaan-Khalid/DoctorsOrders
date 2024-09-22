@@ -1,31 +1,31 @@
-import React, { useEffect } from "react"
-import { useAuth0 } from "@auth0/auth0-react"
-import { useNavigate } from "react-router-dom"
+import React, { useEffect } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useNavigate } from "react-router-dom";
 
 const AuthButtons = ({ role }) => {
-	let navigate = useNavigate()
-	const { loginWithRedirect, logout, isAuthenticated, isLoading } = useAuth0()
+	let navigate = useNavigate();
+	const { loginWithRedirect, logout, isAuthenticated, isLoading } = useAuth0();
 
 	useEffect(() => {
-		console.log("Role:", role)
+		console.log("Role:", role);
 		if (role === "Nurse") {
-			navigate("/nurse-form")
+			navigate("/nurse-orders");
 		} else if (role === "Doctor") {
-			navigate("/doctor-orders")
+			navigate("/doctor-orders");
 		} else {
-			console.log("Invalid role")
+			console.log("Invalid role");
 		}
-	}, [isAuthenticated, role])
+	}, [isAuthenticated, role]);
 
 	const handleLogin = () => {
 		loginWithRedirect()
 			.then(() => {
-				console.log("Login successful")
+				console.log("Login successful");
 			})
 			.catch((error) => {
-				console.error("Login failed", error)
-			})
-	}
+				console.error("Login failed", error);
+			});
+	};
 
 	return (
 		<div className="flex justify-center mt-4">
@@ -45,7 +45,7 @@ const AuthButtons = ({ role }) => {
 				</button>
 			)}
 		</div>
-	)
-}
+	);
+};
 
-export default AuthButtons
+export default AuthButtons;
