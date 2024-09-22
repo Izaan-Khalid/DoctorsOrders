@@ -80,11 +80,11 @@ export const Home = () => {
 
 			{/* Home Section */}
 			<section id="home" className="bg-gray-100 py-20">
-				<div className="container mx-auto text-center">
+				<div className="container flex flex-col mx-auto text-center">
 					<img
 						src={medicalStaff}
 						alt="Medical Staff"
-						className="w-full h-96 object-cover mb-6"
+						className="w-auto h-40 object-cover mb-6 self-center justify-center"
 					/>
 					<h1 className="text-3xl font-bold text-gray-800 mb-4">
 						Streamlining Communication Between Nurses and Doctors
