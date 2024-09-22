@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react"
-import "./Home.css"
-import AuthButtons from "./AuthButtons"
-import { useAuth0 } from "@auth0/auth0-react"
+import React, { useEffect, useState } from "react";
+import "./Home.css";
+import AuthButtons from "./AuthButtons";
+import Logo from "../../assets/HospiTalkLogo.png";
+import medicalStaff from "../../assets/medical-staff.jpeg";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export const Home = () => {
 	const { user, isAuthenticated, isLoading, getAccessTokenSilently } =
-		useAuth0()
-	const [role, setrole] = useState("")
+		useAuth0();
+	const [role, setrole] = useState("");
 
 	const fetchRoles = async () => {
 		if (isAuthenticated && user) {
@@ -21,25 +23,130 @@ export const Home = () => {
 							"Content-Type": "application/json",
 						},
 					}
-				)
-				const data = await response.json()
-				setrole(data[0].name)
+				);
+				const data = await response.json();
+				setrole(data[0].name);
 			} catch (error) {
-				console.error("Error fetching roles:", error)
+				console.error("Error fetching roles:", error);
 			}
 		}
-	}
+	};
 
 	useEffect(() => {
-		fetchRoles()
-	})
+		fetchRoles();
+	});
+	//
+
+	// <button className="learn-more mb-5">
+	// 						<span className="circle" aria-hidden="true">
+	// 							<span className="icon arrow"></span>
+	// 						</span>
+	// 						<span className="button-text">Doctor</span>
+	// 					</button>
+	const [isNurseDropdownOpen, setIsNurseDropdownOpen] = useState(false);
+
+	const handleNurseClick = () => {
+		setIsNurseDropdownOpen(!isNurseDropdownOpen);
+	};
 
 	return (
-		<div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-			<h1 className="text-2xl font-bold mb-4">Welcome to HospiTalk</h1>
-			<AuthButtons role={role} />
-		</div>
-	)
-}
+		<div>
+			{/* Navbar */}
+			<nav className="bg-black p-4 shadow-md">
+				<div className="container mx-auto flex justify-between items-center">
+					<img src={Logo} alt="logo" className="w-auto h-40 object-contain" />
+					<ul className="flex space-x-24 text-white transition-all mr-5">
+						<li>
+							<a href="#home" className="hover:underline">
+								Home
+							</a>
+						</li>
+						<li>
+							<a href="#purpose" className="hover:underline">
+								Purpose
+							</a>
+						</li>
+						<li>
+							<a href="#about" className="hover:underline">
+								About Us
+							</a>
+						</li>
+						<li>
+							<AuthButtons role={role} />
+						</li>
+					</ul>
+				</div>
+			</nav>
 
-export default Home
+			{/* Home Section */}
+			<section id="home" className="bg-gray-100 py-20">
+				<div className="container mx-auto text-center">
+					<img
+						src={medicalStaff}
+						alt="Medical Staff"
+						className="w-full h-96 object-cover mb-6"
+					/>
+					<h1 className="text-3xl font-bold text-gray-800 mb-4">
+						Streamlining Communication Between Nurses and Doctors
+					</h1>
+					<p className="text-lg text-gray-600">
+						Improving healthcare collaboration for better patient outcomes.
+					</p>
+				</div>
+			</section>
+
+			{/* Purpose Section */}
+			<section id="purpose" className="bg-white py-20">
+				<div className="container mx-auto text-center">
+					<h2 className="text-2xl font-bold text-gray-800 mb-8">Our Purpose</h2>
+					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+						<div className="p-6 bg-gray-100 rounded-lg shadow-md">
+							<div className="text-4xl mb-4">🔗</div>
+							<p className="text-lg text-gray-700">
+								Enhancing communication between nurses and doctors for efficient
+								collaboration.
+							</p>
+						</div>
+						<div className="p-6 bg-gray-100 rounded-lg shadow-md">
+							<div className="text-4xl mb-4">⚡</div>
+							<p className="text-lg text-gray-700">
+								Accelerating response times to better meet patient needs swiftly
+								and effectively.
+							</p>
+						</div>
+						<div className="p-6 bg-gray-100 rounded-lg shadow-md">
+							<div className="text-4xl mb-4">💼</div>
+							<p className="text-lg text-gray-700">
+								Improving doctors’ efficiency and overall quality of life
+								through optimized workflows.
+							</p>
+						</div>
+						<div className="p-6 bg-gray-100 rounded-lg shadow-md">
+							<div className="text-4xl mb-4">🩺</div>
+							<p className="text-lg text-gray-700">
+								Easing the workload of nurses to allow more focus on patient
+								care and well-being.
+							</p>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			{/* About Us Section */}
+			<section id="about" className="bg-gray-50 py-20">
+				<div className="container mx-auto text-center">
+					<h2 className="text-2xl font-bold text-gray-800 mb-6">About Us</h2>
+					<p className="text-lg text-gray-700 max-w-2xl mx-auto">
+						We are a dedicated team of four students — Usman, Izaan, Emilio, and
+						Hung — committed to revolutionizing the healthcare field by
+						improving communication within hospitals. Our goal is to foster
+						better collaboration between medical staff, enhancing patient
+						outcomes and the overall efficiency of healthcare systems.
+					</p>
+				</div>
+			</section>
+		</div>
+	);
+};
+
+export default Home;
