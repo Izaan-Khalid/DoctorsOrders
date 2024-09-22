@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment-timezone";
 import { createClient } from "@supabase/supabase-js";
+import AuthButtons from "../AuthButtons";
 
 const getRowColor = (urgency) => {
 	switch (urgency) {
@@ -102,6 +103,9 @@ export function DoctorOrders() {
 
 	return (
 		<div className="max-w-6xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
+			<div className="w-full flex justify-start items-start">
+				<AuthButtons />
+			</div>
 			<h1 className="text-2xl font-bold text-center mb-6">Doctor Orders</h1>
 			<table className="min-w-full bg-white border border-gray-300">
 				<thead>
