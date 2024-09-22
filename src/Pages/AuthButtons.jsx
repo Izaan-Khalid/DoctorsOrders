@@ -8,9 +8,9 @@ const AuthButtons = ({ role }) => {
 
 	useEffect(() => {
 		console.log("Role:", role)
-		if (role === "Nurse") {
+		if (role === "nurse") {
 			navigate("/nurse-orders")
-		} else if (role === "Doctor") {
+		} else if (role === "doctor") {
 			navigate("/doctor-orders")
 		} else {
 			console.log("Invalid role")
