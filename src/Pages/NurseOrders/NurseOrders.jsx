@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { createClient } from "@supabase/supabase-js";
 
 // Format the time for both "time requested" and "time approved"
 const formatTime = (timeString) => {
@@ -13,6 +14,11 @@ const formatTime = (timeString) => {
   };
   return new Date(timeString).toLocaleString(undefined, options);
 };
+
+const supabase = createClient(
+  "https://folxeipnfjiyraszjjod.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZvbHhlaXBuZmppeXJhc3pqam9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY4OTQ1MTUsImV4cCI6MjA0MjQ3MDUxNX0.bsyItI4bs1iykdZY0wrsRPpHLgwfFBP2zEvU8ahnP2I"
+);
 
 // Get row color based on urgency level
 const getRowColor = (urgency) => {
@@ -46,10 +52,20 @@ export const NurseOrders = ({ data }) => {
     setShowCompleteModal(true);
   };
 
-  const completeOrder = (order) => {
-    // Logic to mark the order as completed goes here
+  const completeOrder = async (order) => {
+    const { error } = await supabase
+      .from("DoctorsOrders") // Use the correct table name
+      .delete()
+      .eq("id", order.id);
+
+    if (error) {
+      console.error("Error deleting order: ", error);
+    } else {
+      console.log("Order completed:", order);
+      window.location.reload();
+    }
+
     setShowCompleteModal(false);
-    console.log("Order completed:", order);
   };
 
   return (
@@ -82,7 +98,7 @@ export const NurseOrders = ({ data }) => {
             </thead>
             <tbody>
               {approvedOrders.map((order) => (
-                <tr key={order.nurseId} className="bg-green-100">
+                <tr key={order.id} className="bg-green-100">
                   <td className="border px-2 py-2 text-xs lg:text-base">
                     <button
                       className="bg-blue-500 text-white font-medium py-1 px-2 rounded hover:bg-blue-600"
@@ -129,7 +145,7 @@ export const NurseOrders = ({ data }) => {
             </thead>
             <tbody>
               {sentOrders.map((order) => (
-                <tr key={order.nurseId} className={getRowColor(order.urgency)}>
+                <tr key={order.id} className={getRowColor(order.urgency)}>
                   <td className="border px-2 py-2 text-xs lg:text-base">{order.patientName}</td>
                   <td className="border px-2 py-2 text-xs lg:text-base">{order.itemRequested}</td>
                   <td className="border px-2 py-2 text-xs lg:text-base">{order.roomNo}</td>
@@ -155,7 +171,7 @@ export const NurseOrders = ({ data }) => {
             <div className="mt-4">
               <button
                 className="bg-green-500 text-white py-1 px-4 rounded mr-2"
-                onClick={() => completeOrder(selectedOrder)}
+                onClick={() => completeOrder(selectedOrder)} // Call the async function
               >
                 Complete
               </button>
