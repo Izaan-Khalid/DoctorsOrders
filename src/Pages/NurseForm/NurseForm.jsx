@@ -4,8 +4,8 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
 
 const supabase = createClient(
-  "https://folxeipnfjiyraszjjod.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZvbHhlaXBuZmppeXJhc3pqam9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY4OTQ1MTUsImV4cCI6MjA0MjQ3MDUxNX0.bsyItI4bs1iykdZY0wrsRPpHLgwfFBP2zEvU8ahnP2I"
+	"https://folxeipnfjiyraszjjod.supabase.co",
+	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZvbHhlaXBuZmppeXJhc3pqam9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY4OTQ1MTUsImV4cCI6MjA0MjQ3MDUxNX0.bsyItI4bs1iykdZY0wrsRPpHLgwfFBP2zEvU8ahnP2I"
 );
 
 export function NurseForm() {
@@ -16,54 +16,60 @@ export function NurseForm() {
   } = useForm();
   const [urgencyValue, setUrgencyValue] = useState(3);
   const navigate = useNavigate(); // Initialize useNavigate for redirection
-  const [isLoading, setisLoading] = useState(false)
-
+  const [isLoading, setIsLoading] = useState(false);
 
   async function addData(data) {
-	try{
-		setisLoading(true)
-		const { error } = await supabase.from("DoctorsOrders").insert({
-		nurseId: data.nurseId,
-		patientName: data.patientName,
-		roomNo: data.roomNum,
-		itemRequested: data.itemRequested,
-		urgency: urgencyValue,
-		reason: data.reason,
-    });
-	}
-	catch{
-		console.log("Error")
-	}
-	finally{
-		// Generate a random delay between 200 and 1200 milliseconds
-		const delay = Math.floor(Math.random() * (1200 - 200 + 1)) + 200;
-		setTimeout(() => {
-		  navigate("/nurse-orders"); // Redirect to /nurse-orders after the delay
-		}, delay);
-	  }
+    try {
+      setIsLoading(true);
+      const { error } = await supabase.from("DoctorsOrders").insert({
+        nurseId: data.nurseId,
+        patientName: data.patientName,
+        roomNo: data.roomNum,
+        itemRequested: data.itemRequested,
+        urgency: urgencyValue,
+        reason: data.reason,
+      });
+    } catch {
+      console.log("Error");
+    } finally {
+      // Generate a random delay between 200 and 1200 milliseconds
+      const delay = Math.floor(Math.random() * (1200 - 200 + 1)) + 200;
+      setTimeout(() => {
+        navigate("/nurse-orders"); // Redirect to /nurse-orders after the delay
+      }, delay);
+    }
   }
 
-  if(isLoading){
-	return(
-		<div className="flex justify-center items-center h-screen">
-			<div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
-		</div>
-	)
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+      </div>
+    );
   }
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
       <button
         onClick={() => navigate("/nurse-orders")} // Back button to navigate to /nurse-orders
-        className="mb-4 text-blue-500 hover:underline"
+        className="mb-4 bg-blue-500 text-white font-medium py-2 px-4 rounded hover:bg-blue-600 flex items-center"
       >
-        Back to Nurse Orders
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-7 w-15 mr-1"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            fillRule="evenodd"
+            d="M11.293 15.293a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L9.414 10H17a1 1 0 110 2H9.414l1.879 1.879a1 1 0 010 1.414z"
+            clipRule="evenodd"
+          />
+        </svg>
       </button>
       <h1 className="text-2xl font-bold text-center mb-6">Request Form</h1>
-      <form
-        onSubmit={handleSubmit((data) => addData(data))}
-        className="space-y-6"
-      >
+      <form onSubmit={handleSubmit((data) => addData(data))} className="space-y-6">
         {/* Nurse ID Field */}
         <div>
           <label className="block text-gray-700 font-medium mb-2">Nurse ID</label>
