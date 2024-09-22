@@ -12,6 +12,9 @@ root.render(
 		authorizationParams={{
 			redirect_uri: window.location.origin,
 		}}
+		onRedirectCallback={() => {
+			window.location.href = window.location.origin // Handle redirection after login/logout
+		}}
 	>
 		<App />
 	</Auth0Provider>
