@@ -1,13 +1,9 @@
 import { useEffect, useState } from "react"
 import { createClient } from "@supabase/supabase-js"
 import "./App.css"
-import {
-	BrowserRouter as Router,
-	Routes,
-	Route,
-	Navigate,
-} from "react-router-dom"
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { DoctorOrders, Home, Login, NurseForm, NurseOrders } from "./Pages"
+import { useAuth0 } from "@auth0/auth0-react"
 
 const supabase = createClient(
 	"https://folxeipnfjiyraszjjod.supabase.co",
@@ -15,10 +11,12 @@ const supabase = createClient(
 )
 
 function App() {
+	const [role, setrole] = useState("")
 	const [docOrders, setdocOrders] = useState([])
 
 	useEffect(() => {
-		getDocOrders()
+		const interval = setInterval(getDocOrders, 1000)
+		return () => clearInterval(interval)
 	}, [])
 
 	async function getDocOrders() {
