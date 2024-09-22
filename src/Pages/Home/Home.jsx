@@ -52,10 +52,14 @@ export const Home = () => {
 	return (
 		<div>
 			{/* Navbar */}
-			<nav className="bg-black p-4 shadow-md">
+			<nav className="bg-logo-blue p-1 shadow-md">
 				<div className="container mx-auto flex justify-between items-center">
-					<img src={Logo} alt="logo" className="w-auto h-40 object-contain" />
-					<ul className="flex space-x-24 text-white transition-all mr-5">
+					<img
+						src={Logo}
+						alt="logo"
+						className="w-auto h-40 object-contain ml-8"
+					/>
+					<ul className="flex space-x-24 text-black transition-all mr-5">
 						<li>
 							<a href="#home" className="hover:underline">
 								Home
